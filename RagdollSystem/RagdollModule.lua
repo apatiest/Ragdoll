@@ -27,7 +27,7 @@ local function AddCollision(Part)
 	Collision.CanTouch = false
 	Collision.CanQuery = false
 	Collision.Massless = true
-	Collision.Size = Part.Size/tonumber(2) or Vector3.new(1,1,1)
+	Collision.Size = Part.Size
 	Collision.CFrame = Part.CFrame
 	Collision.Parent = Part
 
@@ -95,7 +95,7 @@ function module.DisableRagdoll(Character)
 	end
 	Humanoid.PlatformStand = false
 	Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-	task.wait(0.03)
+	task.wait(0.01)
 	HumanoidRootPart.Anchored = false
 end
 
