@@ -5,11 +5,9 @@
 local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
-local Fun = ServerStorage:WaitForChild("Fun")
 local Players = game:GetService("Players")
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local GettingUp = Remotes:WaitForChild("GettingUp")
-local Buy = Remotes:WaitForChild("Buy")
 
 local Active = {}
 
@@ -46,3 +44,4 @@ Players.PlayerRemoving:Connect(function(Player)
 	Active[Player] = nil
 
 end)
+
