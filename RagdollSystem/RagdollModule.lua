@@ -7,8 +7,8 @@ local module = {}
 
 
 local function CreateGroup(name)
-if not pcall(function() PhysicsService:GetRegisteredCollisionGroup(name) end) then
-	PhysicsService:RegisterCollisionGroup(name)
+	if not pcall(function() PhysicsService:GetRegisteredCollisionGroup(name) end) then
+		PhysicsService:RegisterCollisionGroup(name)
 	end
 end
 
@@ -30,9 +30,9 @@ local function AddCollision(Part)
 	Collision.Size = Part.Size/tonumber(2) or Vector3.new(1,1,1)
 	Collision.CFrame = Part.CFrame
 	Collision.Parent = Part
-	
+
 	Collision.CollisionGroup = "RagdollParts"
-	
+
 	local Weld = Instance.new("WeldConstraint")
 	Weld.Part0 = Part
 	Weld.Part1 = Collision
@@ -45,7 +45,7 @@ function module.EnableRagdoll(Character)
 	HumanoidRootPart.CollisionGroup = "RootPart"
 	Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
 	Humanoid.PlatformStand = true
-	
+
 	for index,joint in pairs(Character:GetDescendants()) do
 		if joint:IsA("Motor6D") then
 			local socket = Instance.new("BallSocketConstraint")
@@ -72,13 +72,24 @@ function module.EnableRagdoll(Character)
 	Humanoid.AutoRotate = false
 end
 
+local function ResetVelocity(Part)
+	Part.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+	Part.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+	Part.RotVelocity = Vector3.new(0, 0, 0)
+end
+
 function module.DisableRagdoll(Character)
 	local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 	local Humanoid = Character:WaitForChild("Humanoid")
+	ResetVelocity(HumanoidRootPart)
+	HumanoidRootPart.Anchored = true
 	for index,joint in pairs(Character:GetDescendants()) do
+		
 		if joint:IsA("Motor6D") then
 			joint.Enabled = true
+			ResetVelocity(joint.Part1)
 		end
+		
 		if joint.Name == "BallSocketConstraint" then
 			joint:Destroy()
 		end
@@ -88,15 +99,15 @@ function module.DisableRagdoll(Character)
 		if joint.Name == "Collision" then
 			joint:Destroy()
 		end
-		
+
 	end
-	Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
 	Humanoid.PlatformStand = false
-	HumanoidRootPart.Anchored = false
+	Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
 	Humanoid.AutoRotate = true
+	task.wait(0.1)
+	HumanoidRootPart.Anchored = false
 end
 
 
 
 return module
-
